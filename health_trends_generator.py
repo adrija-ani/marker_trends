@@ -55,7 +55,7 @@ fig.suptitle('Health Marker Trend Analysis - KIRANKUMAR PADAPUDI (38Y, Male)',
              fontsize=24, fontweight='bold', y=0.995)
 
 # Add subtitle
-fig.text(0.5, 0.985, 'Comparison: Report 1 (Jan 2025) vs Report 2 (Sep 2025)', 
+fig.text(0.5, 0.985, '', 
          ha='center', fontsize=14, style='italic', color='#666')
 
 # Select key tests to visualize (adjust as needed)
