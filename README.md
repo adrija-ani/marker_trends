@@ -5,12 +5,12 @@ It helps track health parameters (like hemoglobin, glucose, WBC, etc.) over time
 
 *Features*
 
-Load patient reports stored as JSON files
+1.Load patient reports stored as JSON files
 
-Extract test values and statuses (LOW, NORMAL, HIGH, ABNORMAL)
+2.Extract test values and statuses (LOW, NORMAL, HIGH, ABNORMAL)
 
-Generate a marker trend chart showing variations over multiple reports
+3.Generate a marker trend chart showing variations over multiple reports
 
-Highlight abnormal values with color-coded markers
+4.Highlight abnormal values with color-coded markers
 
-Easily extendable for new lab tests and additional patients
+5.Easily extendable for new lab tests and additional patients
