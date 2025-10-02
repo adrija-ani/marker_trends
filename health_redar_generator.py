@@ -189,12 +189,12 @@ HEALTH CONDITION RATINGS:
         values += values[:1]  # Complete the circle
         angles += angles[:1]
         
-        # Create figure - matching your sketch layout
-        fig = plt.figure(figsize=(20, 11))
+        # Create figure with larger size
+        fig = plt.figure(figsize=(20, 14))
         
-        # Create grid spec: 3 rows, 2 columns - Chart left, Boxes right with more space
-        gs = fig.add_gridspec(3, 2, height_ratios=[0.4, 1.1, 1.3], width_ratios=[1.2, 1], 
-                             hspace=0.3, wspace=0.2, left=0.05, right=0.97, top=0.93, bottom=0.05)
+        # Create grid spec: 4 rows, 2 columns for better spacing
+        gs = fig.add_gridspec(4, 2, height_ratios=[0.3, 0.8, 0.1, 1.3], width_ratios=[1.2, 1], 
+                             hspace=0.25, wspace=0.2, left=0.05, right=0.97, top=0.95, bottom=0.03)
         
         # Patient Info
         patient_info = self.data['patient_info']
@@ -207,9 +207,9 @@ HEALTH CONDITION RATINGS:
         
         # Overall title at top
         fig.suptitle(f'Health Balance Report - {patient_info["name"]}', 
-                    fontsize=22, weight='bold')
+                    fontsize=18, weight='bold')
         
-        # TOP RIGHT - OVERALL HEALTH SCORE (small box at top right)
+        # TOP RIGHT - OVERALL HEALTH SCORE
         ax_score = fig.add_subplot(gs[0, 1])
         ax_score.axis('off')
         
@@ -236,34 +236,34 @@ HEALTH CONDITION RATINGS:
 {condition}"""
         
         ax_score.text(0.5, 0.5, score_text, transform=ax_score.transAxes, 
-                     fontsize=14, weight='bold', ha='center', va='center',
-                     bbox=dict(boxstyle='round,pad=1.2', facecolor=score_colors[color], 
-                              edgecolor=edge_colors[color], linewidth=4))
+                     fontsize=11, weight='bold', ha='center', va='center',
+                     bbox=dict(boxstyle='round,pad=0.8', facecolor=score_colors[color], 
+                              edgecolor=edge_colors[color], linewidth=3))
         
-        # LEFT SIDE - RADAR CHART (spanning all 3 rows on left)
-        ax_radar = fig.add_subplot(gs[:, 0], polar=True)
+        # LEFT SIDE - RADAR CHART (spanning rows 0-3 on left)
+        ax_radar = fig.add_subplot(gs[0:4, 0], polar=True)
         
         # Draw one axis per variable and add labels
-        plt.xticks(angles[:-1], categories, size=13, weight='bold')
+        plt.xticks(angles[:-1], categories, size=11, weight='bold')
         
         # Draw ylabels
         ax_radar.set_rlabel_position(0)
-        plt.yticks([25, 50, 75, 100], ["25", "50", "75", "100"], color="grey", size=11)
+        plt.yticks([25, 50, 75, 100], ["25", "50", "75", "100"], color="grey", size=9)
         plt.ylim(0, 100)
         
         # Plot data - Your health score (solid line)
-        ax_radar.plot(angles, values, linewidth=3, linestyle='solid', color='#3b82f6', 
-                     label='Your Health', marker='o', markersize=8)
+        ax_radar.plot(angles, values, linewidth=2.5, linestyle='solid', color='#3b82f6', 
+                     label='Your Health', marker='o', markersize=6)
         ax_radar.fill(angles, values, color='#3b82f6', alpha=0.3)
         
         # Plot optimal range (dashed line)
         optimal_values = [100] * (N + 1)
-        ax_radar.plot(angles, optimal_values, linewidth=2.5, linestyle='--', 
+        ax_radar.plot(angles, optimal_values, linewidth=2, linestyle='--', 
                      color='#10b981', label='Optimal', alpha=0.7)
         ax_radar.fill(angles, optimal_values, color='#10b981', alpha=0.08)
         
-        # Add legend at bottom left
-        legend = ax_radar.legend(loc='lower left', fontsize=12, framealpha=0.9)
+        # Add legend at upper right to avoid overlap
+        legend = ax_radar.legend(loc='upper right', bbox_to_anchor=(1.12, 1.05), fontsize=10, framealpha=0.9)
         legend.get_frame().set_facecolor('white')
         legend.get_frame().set_edgecolor('gray')
         
@@ -304,21 +304,21 @@ RECOMMENDATIONS
         else:
             patient_text += "• Multiple parameters outside range\n• Immediate medical consultation needed"
         
-        ax_patient.text(0.05, 1.0, patient_text, transform=ax_patient.transAxes, 
-                       fontsize=10, verticalalignment='top', fontfamily='monospace',
-                       bbox=dict(boxstyle='round', facecolor='#e8f4f8', alpha=0.7, 
+        ax_patient.text(0.05, 0.98, patient_text, transform=ax_patient.transAxes, 
+                       fontsize=8.5, verticalalignment='top', fontfamily='monospace',
+                       bbox=dict(boxstyle='round,pad=0.6', facecolor='#e8f4f8', alpha=0.7, 
                                 edgecolor='#5dade2', linewidth=2))
         
         # BOTTOM RIGHT - TESTS REQUIRING ATTENTION BOX
-        ax_tests = fig.add_subplot(gs[2, 1])
+        ax_tests = fig.add_subplot(gs[3, 1])
         ax_tests.axis('off')
         
         if abnormal_tests:
-            # Create a text box for abnormal tests - now bigger
+            # Create a text box for abnormal tests
             tests_text = "⚠️  TESTS REQUIRING IMMEDIATE ATTENTION ⚠️\n"
             tests_text += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
             
-            for i, test in enumerate(abnormal_tests[:6], 1):  # Show up to 6 tests now
+            for i, test in enumerate(abnormal_tests[:6], 1):  # Show up to 6 tests
                 status_symbol = "🔴" if test.get('status') == 'ABNORMAL' else "🟡"
                 tests_text += f"{status_symbol} {i}. {test['name']}\n"
                 tests_text += f"   Value: {test['value']} {test.get('unit', '')} ({test.get('status')})\n"
@@ -341,9 +341,9 @@ RECOMMENDATIONS
             
             # Larger highlighted box with red background
             ax_tests.text(0.05, 0.98, tests_text, transform=ax_tests.transAxes, 
-                         fontsize=10, verticalalignment='top', fontfamily='monospace',
-                         bbox=dict(boxstyle='round', facecolor='#ffe6e6', alpha=0.95, 
-                                  edgecolor='#dc3545', linewidth=4))
+                         fontsize=8.5, verticalalignment='top', fontfamily='monospace',
+                         bbox=dict(boxstyle='round,pad=0.6', facecolor='#ffe6e6', alpha=0.95, 
+                                  edgecolor='#dc3545', linewidth=3))
         else:
             tests_text = "✅ EXCELLENT NEWS! ✅\n"
             tests_text += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
@@ -358,9 +358,9 @@ RECOMMENDATIONS
             tests_text += "• Stay hydrated and avoid harmful substances\n"
             
             ax_tests.text(0.05, 0.98, tests_text, transform=ax_tests.transAxes, 
-                         fontsize=11, verticalalignment='top', fontfamily='monospace',
-                         bbox=dict(boxstyle='round', facecolor='#e6ffe6', alpha=0.95, 
-                                  edgecolor='#28a745', linewidth=4))
+                         fontsize=9, verticalalignment='top', fontfamily='monospace',
+                         bbox=dict(boxstyle='round,pad=0.6', facecolor='#e6ffe6', alpha=0.95, 
+                                  edgecolor='#28a745', linewidth=3))
         
         # Save with fixed filename
         filename = "health_radar.png"
